@@ -1,0 +1,6 @@
+name = Content Check
+core = 7.x
+files[] = src/ContentCheckInterface.php
+files[] = src/FilteredTextFieldCheckBase.php
+files[] = src/InsecureContentCheck.php
+files[] = src/UrlAliasCheck.php
