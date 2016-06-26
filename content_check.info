@@ -1,6 +1,9 @@
 name = Content Check
 core = 7.x
+files[] = src/AmpContentCheck.php
+files[] = src/ContentCheckHelperTrait.php
 files[] = src/ContentCheckInterface.php
-files[] = src/FilteredTextFieldCheckBase.php
+files[] = src/ImageAltMissingContentCheck.php
 files[] = src/InsecureContentCheck.php
 files[] = src/UrlAliasCheck.php
+dependencies[] = helper

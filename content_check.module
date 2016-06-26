@@ -40,6 +40,16 @@ function content_check_content_check_info() {
     'title' => t('Insecure content'),
     'class' => 'InsecureContentCheck',
   );
+  if (module_exists('amp')) {
+    $info['amp'] = array(
+      'title' => t('AMP content'),
+      'class' => 'AmpContentCheck',
+    );
+  }
+  $info['image_alt_missing'] = array(
+    'title' => 'Image alternate text',
+    'class' => 'ImageAltMissingContentCheck',
+  );
 
   return $info;
 }
