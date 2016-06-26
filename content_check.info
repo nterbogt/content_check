@@ -5,5 +5,6 @@ files[] = src/ContentCheckHelperTrait.php
 files[] = src/ContentCheckInterface.php
 files[] = src/ImageAltMissingContentCheck.php
 files[] = src/InsecureContentCheck.php
+files[] = src/LinkedContentCheck.php
 files[] = src/UrlAliasCheck.php
 dependencies[] = helper

@@ -50,6 +50,10 @@ function content_check_content_check_info() {
     'title' => 'Image alternate text',
     'class' => 'ImageAltMissingContentCheck',
   );
+  $info['linked_content'] = array(
+    'title' => 'Linked content',
+    'class' => 'LinkedContentCheck',
+  );
 
   return $info;
 }
