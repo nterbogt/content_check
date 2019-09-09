@@ -1,121 +1,23 @@
 <?php
 
 /**
- * Implements hook_menu().
+ * @file
+ * Drupal integrations for the content_check module.
  */
-function content_check_menu() {
-  $items['node/%node/check'] = array(
-    'title' => 'Check',
-    'page callback' => 'content_check_results_page',
-    'page arguments' => array('node', 1),
-    'access callback' => 'node_access',
-    'access arguments' => array('update', 1),
-    'type' => MENU_LOCAL_TASK,
-    'file' => 'content_check.pages.inc',
-    'weight' => 1,
-  );
-
-  return $items;
-}
 
 /**
- * Implements hook_admin_paths().
+ * Implements hook_entity_type_alter().
  */
-function content_check_admin_paths() {
-  $paths = array(
-    'node/*/check' => TRUE,
-  );
-  return $paths;
-}
+function content_check_entity_type_alter(array &$entity_types) {
+  /** @var $entity_types \Drupal\Core\Entity\EntityTypeInterface[] */
+  foreach ($entity_types as $entity_type) {
+    if ($entity_type->hasLinkTemplate('canonical')) {
 
-/**
- * Implements hook_content_check_info().
- */
-function content_check_content_check_info() {
-  $info['url_alias'] = array(
-    'title' => t('URL alias'),
-    'class' => 'UrlAliasCheck',
-  );
-  $info['insecure_content'] = array(
-    'title' => t('Insecure content'),
-    'class' => 'InsecureContentCheck',
-  );
-  if (module_exists('amp')) {
-    $info['amp'] = array(
-      'title' => t('AMP content'),
-      'class' => 'AmpContentCheck',
-    );
-  }
-  $info['image_alt_missing'] = array(
-    'title' => 'Image alternate text',
-    'class' => 'ImageAltMissingContentCheck',
-  );
-  $info['linked_content'] = array(
-    'title' => 'Linked content',
-    'class' => 'LinkedContentCheck',
-  );
-
-  return $info;
-}
-
-/**
- * Implements hook_iib_entity_item().
- */
-function content_check_iib_entity_item($entity, $entity_type, $view_mode) {
-  $items = array();
-  if ($view_mode == 'full' && $results = content_check_process_checks($entity_type, $entity)) {
-    $items['content_check'] = array(
-      '#prefix' => '<div><h3>' . t('Content Check') . '</h3>',
-      '#markup' => theme('status_report', array('requirements' => $results)),
-      '#suffix' => '</div>',
-      '#attached' => array(
-        'css' => array(
-          drupal_get_path('module', 'system') . '/system.admin.css' => array(),
-        ),
-      ),
-    );
-  }
-  return $items;
-}
-
-function content_check_get_check_info() {
-  $info = module_invoke_all('content_check_info');
-  drupal_alter('content_check_info', $info);
-  return $info;
-}
-
-function content_check_get_checks($entity_type) {
-  $info = content_check_get_check_info();
-  return array_filter($info, function ($check) use ($entity_type) {
-    return class_exists($check['class']) && $check['class']::isApplicable($entity_type);
-  });
-}
-
-function content_check_process_checks($entity_type, $entity) {
-  list($id, $vid, $bundle) = entity_extract_ids($entity_type, $entity);
-  $cid = $entity_type . ':' . $vid;
-  if ($cache = cache_get('content_check', $cid)) {
-    return $cache->data;
-  }
-  else {
-    include_once DRUPAL_ROOT . '/includes/install.inc';
-    $results = array();
-    $checks = content_check_get_checks($entity_type);
-    foreach ($checks as $key => $check) {
-      /** @var ContentCheckInterface $instance */
-      $instance = new $check['class']();
-      if ($result = $instance->check($entity_type, $entity)) {
-        $results = array_merge($results, $result);
-      }
-      else {
-        $results[$key] = array(
-          'title' => $check['title'],
-          'value' => t('Passed'),
-        );
+      // Provide default route names for the check paths.
+      if (!$entity_type->hasLinkTemplate('drupal:content-check-overview')) {
+        $path = $entity_type->getLinkTemplate('canonical') . '/check';
+        $entity_type->setLinkTemplate('drupal:content-check-overview', $path);
       }
     }
-
-    cache_set($cid, $results);
-    return $results;
   }
 }

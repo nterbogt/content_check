@@ -1,0 +1,4 @@
+name: Content Check
+description: 'Provides ability to audit entities with plugins.'
+core: 8.x
+type: module

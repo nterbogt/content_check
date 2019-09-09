@@ -1,0 +1,14 @@
+services:
+  content_check.subscriber:
+    class: Drupal\content_check\Routing\ContentCheckRouteSubscriber
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: event_subscriber }
+
+  plugin.manager.content_check.content_check:
+    class: Drupal\content_check\Plugin\ContentCheckPluginManager
+    parent: default_plugin_manager
+
+  plugin.manager.content_check.content_check_input:
+    class: Drupal\content_check\Plugin\ContentCheckInputPluginManager
+    parent: default_plugin_manager

@@ -1,0 +1,3 @@
+content_check.local_tasks:
+  deriver: 'Drupal\content_check\Plugin\Derivative\ContentCheckLocalTasks'
+  weight: 100
